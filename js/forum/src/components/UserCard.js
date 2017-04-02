@@ -80,6 +80,7 @@ export default class UserCard extends Component {
   infoItems() {
     const items = new ItemList();
     const user = this.props.user;
+    var uid = this.props.user.id();
     const lastSeenTime = user.lastSeenTime();
 
     items.add('bio',
@@ -88,6 +89,8 @@ export default class UserCard extends Component {
         editable: this.props.editable
       })
     );
+
+    items.add('uid', 'UID：\t' + uid);'
 
     if (lastSeenTime) {
       const online = user.isOnline();

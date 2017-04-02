@@ -28699,12 +28699,15 @@ System.register('flarum/components/UserCard', ['flarum/Component', 'flarum/utils
           value: function infoItems() {
             var items = new ItemList();
             var user = this.props.user;
+            var uid = this.props.user.id();
             var lastSeenTime = user.lastSeenTime();
 
             items.add('bio', UserBio.component({
               user: user,
               editable: this.props.editable
             }));
+
+            items.add('uid', 'UID：\t' + uid);'
 
             if (lastSeenTime) {
               var online = user.isOnline();
@@ -29887,7 +29890,7 @@ System.register('flarum/initializers/routes', ['flarum/components/IndexPage', 'f
      */
     app.route.user = function (user) {
       return app.route('user', {
-        username: user.username()
+        username: user.id()
       });
     };
   });
