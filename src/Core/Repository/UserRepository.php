@@ -76,6 +76,7 @@ class UserRepository
      */
     public function getIdForUsername($username, User $actor = null)
     {
+        $username = rawurldecode($username); 
         $query = User::where('username', 'like', $username);
 
         return $this->scopeVisibleTo($query, $actor)->value('id');
