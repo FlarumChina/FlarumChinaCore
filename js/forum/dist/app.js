@@ -25416,7 +25416,7 @@ System.register('flarum/components/PostMeta', ['flarum/Component', 'flarum/helpe
               m(
                 'a',
                 { className: 'Dropdown-toggle', onclick: selectPermalink, 'data-toggle': 'dropdown' },
-                humanTime(time)
+                fullTime(time)
               ),
               m(
                 'div',
