@@ -1,5 +1,5 @@
 {
-    "name": "flarumchina/core",
+    "name": "flarum/core",
     "description": "Delightfully simple forum software for Chinese.",
     "keywords": ["forum", "discussion"],
     "homepage": "http://flarum.ga",
@@ -24,7 +24,7 @@
         "docs": "http://flarum.ga/docs"
     },
     "require": {
-        "php": ">=5.6.0",
+/        "php": ">=5.6.0",
         "dflydev/fig-cookies": "^1.0.2",
         "doctrine/dbal": "^2.5",
         "components/font-awesome": "^4.6",
