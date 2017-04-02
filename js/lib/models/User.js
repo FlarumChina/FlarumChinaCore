@@ -86,6 +86,8 @@ Object.assign(User.prototype, {
     const image = new Image();
     const user = this;
 
+    image.crossOrigin="";
+
     image.onload = function() {
       const colorThief = new ColorThief();
       user.avatarColor = colorThief.getColor(this);
