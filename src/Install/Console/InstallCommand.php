@@ -159,7 +159,7 @@ class InstallCommand extends AbstractCommand
                 throw new Exception('You must enter a valid email.');
             }
 
-            if (! $admin['username'] || preg_match('/[^a-z0-9_-]/i', $admin['username'])) {
+            if (! $admin['username'] || preg_match('/[^-_a-zA-Z0-9\x7f-\xff]/i', $admin['username'])) {
                 throw new Exception('Username can only contain letters, numbers, underscores, and dashes.');
             }
 
