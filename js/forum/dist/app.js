@@ -28688,7 +28688,6 @@ System.register('flarum/components/UserCard', ['flarum/Component', 'flarum/utils
                     m(
                       'ul',
                       { className: 'UserCard-info' },
-			'UID：\t' + uid,
                       listItems(this.infoItems().toArray())
                     )
                   )

@@ -64,7 +64,6 @@ export default class UserCard extends Component {
               ) : ''}
 
               <ul className="UserCard-info">
-			'UID：\t' + uid,
                 {listItems(this.infoItems().toArray())}
               </ul>
             </div>
