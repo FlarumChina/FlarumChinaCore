@@ -62,7 +62,7 @@
         "sijad/flarum-ext-links": "^0.1.0@beta",
         "flagrow/flarum-ext-image-upload": "^0.3.1",
         "cloudinary/cloudinary_php": "^1.4",
-        "s9e/flarum-ext-mediaembed": "^0.3.2",
+        "flarumchina/flarum-ext-mediaembed": "^0.3",
         "sijad/flarum-ext-details": "^0.1.2",
         "wiwatsrt/flarum-ext-best-answer": "^0.1.0@beta",
         "clarkwinkelmann/flarum-ext-emojionearea": "^0.1.1",
