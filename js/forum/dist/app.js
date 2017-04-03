@@ -28640,6 +28640,7 @@ System.register('flarum/components/UserCard', ['flarum/Component', 'flarum/utils
           key: 'view',
           value: function view() {
             var user = this.props.user;
+            var uid = this.props.user.id();
             var controls = UserControls.controls(user, this).toArray();
             var color = user.color();
             var badges = user.badges().toArray();
@@ -28687,6 +28688,7 @@ System.register('flarum/components/UserCard', ['flarum/Component', 'flarum/utils
                     m(
                       'ul',
                       { className: 'UserCard-info' },
+			'UID：\t' + uid,
                       listItems(this.infoItems().toArray())
                     )
                   )
@@ -28707,7 +28709,7 @@ System.register('flarum/components/UserCard', ['flarum/Component', 'flarum/utils
               editable: this.props.editable
             }));
 
-            items.add('uid', 'UID：\t' + uid);'
+            items.add('uid', 'UID：\t' + uid);
 
             if (lastSeenTime) {
               var online = user.isOnline();

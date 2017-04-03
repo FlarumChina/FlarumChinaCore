@@ -25,6 +25,7 @@ import listItems from 'flarum/helpers/listItems';
 export default class UserCard extends Component {
   view() {
     const user = this.props.user;
+    var uid = this.props.user.id();
     const controls = UserControls.controls(user, this).toArray();
     const color = user.color();
     const badges = user.badges().toArray();
@@ -63,6 +64,7 @@ export default class UserCard extends Component {
               ) : ''}
 
               <ul className="UserCard-info">
+			'UID：\t' + uid,
                 {listItems(this.infoItems().toArray())}
               </ul>
             </div>
@@ -90,7 +92,7 @@ export default class UserCard extends Component {
       })
     );
 
-    items.add('uid', 'UID：\t' + uid);'
+    items.add('uid', 'UID：\t' + uid);
 
     if (lastSeenTime) {
       const online = user.isOnline();
