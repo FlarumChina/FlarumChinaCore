@@ -349,6 +349,12 @@ class InstallCommand extends AbstractCommand
             'antoinefr-money',
             'wiseclock-post-copyright',
             'wiseclock-profile-image-crop',
+            'flagrow-byobu',
+            'flagrow-upload',
+            'wiseclock-reply2see',
+            'wiseclock-login2see',
+            'reflar-gamification',
+            'flagrow-masquerade',
         ];
 
         foreach ($extensions->getExtensions() as $name => $extension) {
