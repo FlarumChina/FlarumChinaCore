@@ -41,6 +41,13 @@ class WebAppView
      */
     public $description;
 
+     /**
+     * The cdnUrl of the document, for cdn support.
+     *
+     * @var null|string
+     */
+    public $cdnUrl;
+
     /**
      * The language of the document, displayed as the value of the attribute `dir` in the <html> tag.
      *
@@ -183,7 +190,7 @@ class WebAppView
         $this->userSerializer = $userSerializer;
         $this->app = $app;
 
-        $this->addHeadString('<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700,600">', 'font');
+        $this->addHeadString('<link rel="stylesheet" href="//fonts.css.network/css?family=Open+Sans:400italic,700italic,400,700,600">', 'font');
 
         $this->js = $this->assets->getJs();
         $this->css = $this->assets->getCss();
@@ -538,6 +545,7 @@ class WebAppView
                         "Yandex bot",
                         "Yisouspider",
                         "YoudaoBot",
+                        "YandexBot",
                 );
                 foreach($spiderSite as $val) {
                         $str = strtolower($val);
