@@ -34,12 +34,7 @@
     </div>
 
     <div class="FormField">
-      <label>MySQL 端口</label>
-      <input type="number" name="mysqlPort">
-    </div>
-
-    <div class="FormField">
-      <label>数据库前缀（可选）</label>
+      <label>数据库前缀(可选)</label>
       <input type="text" name="tablePrefix">
     </div>
   </div>
