@@ -65,8 +65,8 @@ class ForumSerializer extends AbstractSerializer
         $attributes = [
             'title' => $this->settings->get('forum_title'),
             'description' => $this->settings->get('forum_description'),
-            'cdnUrl' => $this->settings->get('forum_cdn'),
-            'meta' => $this->settings->get('forum_meta'),
+            'cdnUrl' => $this->getCdnData(),
+            'meta' => $this->getMetaData(),
             'showLanguageSelector' => (bool) $this->settings->get('show_language_selector', true),
             'baseUrl' => $url = $this->app->url(),
             'basePath' => parse_url($url, PHP_URL_PATH) ?: '',
@@ -120,5 +120,25 @@ class ForumSerializer extends AbstractSerializer
         $faviconPath = $this->settings->get('favicon_path');
 
         return $faviconPath ? $this->url->toPath('assets/'.$faviconPath) : null;
+    }
+    
+    /**
+     * @return null|string
+     */
+    protected function getMetaData()
+    {
+        $MetaData = $this->settings->get('forum_meta');
+
+        return $MetaData ? $this->settings->get('forum_meta') : null;
+    }
+    
+    /**
+     * @return null|string
+     */
+    protected function getCdnData()
+    {
+        $CdnData = $this->settings->get('forum_cdn');
+
+        return $CdnData ? $this->settings->get('forum_cdn') : null;
     }
 }
