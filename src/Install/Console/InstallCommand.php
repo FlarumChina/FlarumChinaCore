@@ -359,6 +359,7 @@ class InstallCommand extends AbstractCommand
             'davis-securehttps',
             'davis-inviteonly',
             'issyrocks12-filter',
+            'stanleysong-auth-wechat',
         ];
 
         foreach ($extensions->getExtensions() as $name => $extension) {
