@@ -196,7 +196,7 @@ class WebAppView
         $this->userSerializer = $userSerializer;
         $this->app = $app;
 
-        $this->addHeadString('<link rel="stylesheet" href="//fonts.css.network/css?family=Open+Sans:400italic,700italic,400,700,600">', 'font');
+        $this->addHeadString('<link rel="stylesheet" href="//fonts.cat.net/css?family=Open+Sans:400italic,700italic,400,700,600">', 'font');
 
         $this->js = $this->assets->getJs();
         $this->css = $this->assets->getCss();
