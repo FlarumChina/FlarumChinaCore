@@ -304,7 +304,7 @@ class WebAppView
         $view = $this->view->file(__DIR__.'/../../../views/app.blade.php');
 
         $view->title = $this->buildTitle(array_get($forum, 'data.attributes.title'));
-        $view->description = $this->description ?: array_get($forum, 'data.attributes.description');
+        $view->description = $this->buildDescription(array_get($forum, 'data.attributes.description'));
         $view->meta = $this->meta ?: array_get($forum, 'data.attributes.meta');
         $view->language = $this->language ?: $this->locales->getLocale();
         $view->direction = $this->direction ?: 'ltr';
@@ -323,6 +323,15 @@ class WebAppView
         $view->foot = implode("\n", $this->foot);
 
         return $view->render();
+    }
+        public function setDescription($description)
+    {
+        $this->description = $description;
+    }
+
+    protected function buildDescription($description)
+    {
+        return $this->description ? $this->description : $description;
     }
 
     protected function buildTitle($forumTitle)
