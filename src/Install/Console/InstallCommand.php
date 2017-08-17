@@ -360,6 +360,8 @@ class InstallCommand extends AbstractCommand
             'davis-inviteonly',
             'issyrocks12-filter',
             'stanleysong-auth-wechat',
+            'reflar-reactions',
+            'flarum-ext-split'
         ];
 
         foreach ($extensions->getExtensions() as $name => $extension) {
