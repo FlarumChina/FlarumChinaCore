@@ -12,18 +12,15 @@
 namespace Flarum\Http\Middleware;
 
 use Flarum\Api\ApiKey;
-use Flarum\Core\User;
 use Flarum\Http\AccessToken;
+use Flarum\User\User;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Zend\Stratigility\MiddlewareInterface;
 
 class AuthenticateWithHeader implements MiddlewareInterface
 {
-    /**
-     * @var string
-     */
-    protected $prefix = 'Token ';
+    const TOKEN_PREFIX = 'Token ';
 
     /**
      * {@inheritdoc}
@@ -34,13 +31,14 @@ class AuthenticateWithHeader implements MiddlewareInterface
 
         $parts = explode(';', $headerLine);
 
-        if (isset($parts[0]) && starts_with($parts[0], $this->prefix)) {
-            $id = substr($parts[0], strlen($this->prefix));
+        if (isset($parts[0]) && starts_with($parts[0], self::TOKEN_PREFIX)) {
+            $id = substr($parts[0], strlen(self::TOKEN_PREFIX));
 
             if (isset($parts[1])) {
-                if (ApiKey::find($id)) {
+                if ($key = ApiKey::find($id)) {
                     $actor = $this->getUser($parts[1]);
 
+                    $request = $request->withAttribute('apiKey', $key);
                     $request = $request->withAttribute('bypassFloodgate', true);
                 }
             } elseif ($token = AccessToken::find($id)) {
