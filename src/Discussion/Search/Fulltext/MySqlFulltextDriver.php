@@ -11,12 +11,8 @@
 
 namespace Flarum\Discussion\Search\Fulltext;
 
-<<<<<<< HEAD:src/Core/Search/Discussion/Fulltext/MySqlFulltextDriver.php
 use Flarum\Core\Post;
 use Flarum\Core\Discussion;
-=======
-use Flarum\Post\Post;
->>>>>>> d807171c445209b2375551b00972491346467d35:src/Discussion/Search/Fulltext/MySqlFulltextDriver.php
 
 class MySqlFulltextDriver implements DriverInterface
 {
@@ -25,18 +21,10 @@ class MySqlFulltextDriver implements DriverInterface
      */
     public function match($string)
     {
-<<<<<<< HEAD:src/Core/Search/Discussion/Fulltext/MySqlFulltextDriver.php
         $discussionIds = Discussion::whereRaw("is_approved = 1 AND title LIKE '%$string%'")
             ->orderBy('id', 'desc')
             ->limit(50)
             ->lists('id','start_post_id');
-=======
-        $discussionIds = Post::where('type', 'comment')
-            ->whereRaw('MATCH (`content`) AGAINST (? IN BOOLEAN MODE)', [$string])
-            ->orderByRaw('MATCH (`content`) AGAINST (?) DESC', [$string])
-            ->pluck('discussion_id', 'id');
-
->>>>>>> d807171c445209b2375551b00972491346467d35:src/Discussion/Search/Fulltext/MySqlFulltextDriver.php
         $relevantPostIds = [];
         foreach ($discussionIds as $postId => $discussionId) {
             $relevantPostIds[$discussionId][] = $postId;

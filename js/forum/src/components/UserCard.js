@@ -83,7 +83,6 @@ export default class UserCard extends Component {
     var uid = this.props.user.id();
     const lastSeenTime = user.lastSeenTime();
 
-<<<<<<< HEAD
     items.add('bio',
       UserBio.component({
         user,
@@ -93,8 +92,6 @@ export default class UserCard extends Component {
 
     items.add('uid', 'UID：\t' + uid);
 
-=======
->>>>>>> d807171c445209b2375551b00972491346467d35
     if (lastSeenTime) {
       const online = user.isOnline();
 
