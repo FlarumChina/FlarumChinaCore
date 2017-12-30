@@ -6,7 +6,6 @@ import avatar from 'flarum/helpers/avatar';
 import username from 'flarum/helpers/username';
 import icon from 'flarum/helpers/icon';
 import Dropdown from 'flarum/components/Dropdown';
-import UserBio from 'flarum/components/UserBio';
 import AvatarEditor from 'flarum/components/AvatarEditor';
 import listItems from 'flarum/helpers/listItems';
 
