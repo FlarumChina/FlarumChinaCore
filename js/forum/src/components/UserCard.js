@@ -6,7 +6,6 @@ import avatar from 'flarum/helpers/avatar';
 import username from 'flarum/helpers/username';
 import icon from 'flarum/helpers/icon';
 import Dropdown from 'flarum/components/Dropdown';
-import UserBio from 'flarum/components/UserBio';
 import AvatarEditor from 'flarum/components/AvatarEditor';
 import listItems from 'flarum/helpers/listItems';
 
@@ -84,6 +83,7 @@ export default class UserCard extends Component {
     var uid = this.props.user.id();
     const lastSeenTime = user.lastSeenTime();
 
+<<<<<<< HEAD
     items.add('bio',
       UserBio.component({
         user,
@@ -93,6 +93,8 @@ export default class UserCard extends Component {
 
     items.add('uid', 'UID：\t' + uid);
 
+=======
+>>>>>>> d807171c445209b2375551b00972491346467d35
     if (lastSeenTime) {
       const online = user.isOnline();
 

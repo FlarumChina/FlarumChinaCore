@@ -1,0 +1,53 @@
+<?php
+
+/*
+ * This file is part of Flarum.
+ *
+ * (c) Toby Zerner <toby.zerner@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Flarum\Discussion\Search\Fulltext;
+
+<<<<<<< HEAD:src/Core/Search/Discussion/Fulltext/MySqlFulltextDriver.php
+use Flarum\Core\Post;
+use Flarum\Core\Discussion;
+=======
+use Flarum\Post\Post;
+>>>>>>> d807171c445209b2375551b00972491346467d35:src/Discussion/Search/Fulltext/MySqlFulltextDriver.php
+
+class MySqlFulltextDriver implements DriverInterface
+{
+    /**
+     * {@inheritdoc}
+     */
+    public function match($string)
+    {
+<<<<<<< HEAD:src/Core/Search/Discussion/Fulltext/MySqlFulltextDriver.php
+        $discussionIds = Discussion::whereRaw("is_approved = 1 AND title LIKE '%$string%'")
+            ->orderBy('id', 'desc')
+            ->limit(50)
+            ->lists('id','start_post_id');
+=======
+        $discussionIds = Post::where('type', 'comment')
+            ->whereRaw('MATCH (`content`) AGAINST (? IN BOOLEAN MODE)', [$string])
+            ->orderByRaw('MATCH (`content`) AGAINST (?) DESC', [$string])
+            ->pluck('discussion_id', 'id');
+
+>>>>>>> d807171c445209b2375551b00972491346467d35:src/Discussion/Search/Fulltext/MySqlFulltextDriver.php
+        $relevantPostIds = [];
+        foreach ($discussionIds as $postId => $discussionId) {
+            $relevantPostIds[$discussionId][] = $postId;
+        }
+        $discussionIds = Post::whereRaw("is_approved = 1 AND content LIKE '%$string%'")
+            ->orderBy('id', 'desc')
+            ->limit(50)
+            ->lists('discussion_id', 'id');
+        foreach ($discussionIds as $postId => $discussionId) {
+            $relevantPostIds[$discussionId][] = $postId;
+        }
+        return $relevantPostIds;
+    }
+}
