@@ -320,7 +320,7 @@ class FrontendView
         $view->jsUrls = $this->buildJsUrls($cdnUrl);
 
         $view->head = $this->buildHeadContent();
-        $view->foot = implode("\n", $this->foot);
+        $view->foot = $this->buildFootContent(array_get($forum, 'data.attributes.footerHtml'));
 
         return $view->render();
     }
@@ -403,6 +403,11 @@ class FrontendView
         }
 
         return $html;
+    }
+
+    protected function buildFootContent($customFooterHtml)
+    {
+        return implode("\n", $this->foot)."\n".$customFooterHtml;
     }
 
     /**
