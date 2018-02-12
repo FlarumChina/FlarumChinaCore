@@ -27865,8 +27865,10 @@
 			value: function infoItems() {
 			  var items = new ItemList();
 			  var user = this.props.user;
+			  var uid = this.props.user.id();
 			  var lastSeenTime = user.lastSeenTime();
-  
+			  items.add('uid', 'UID：\t' + uid);
+			  
 			  if (lastSeenTime) {
 				var online = user.isOnline();
   
