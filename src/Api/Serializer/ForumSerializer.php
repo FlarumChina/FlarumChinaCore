@@ -36,6 +36,7 @@ class ForumSerializer extends AbstractSerializer
      * @var UrlGenerator
      */
     protected $url;
+    public $CdnData;
 
     /**
      * @param Application $app
@@ -110,7 +111,7 @@ class ForumSerializer extends AbstractSerializer
     {
         $logoPath = $this->settings->get('logo_path');
 
-        return $logoPath ? $CdnData.'/assets/'.$logoPath : null;
+        return $logoPath ? $this->getCdnData().'/assets/'.$logoPath : null;
     }
 
     /**
@@ -120,7 +121,7 @@ class ForumSerializer extends AbstractSerializer
     {
         $faviconPath = $this->settings->get('favicon_path');
 
-		return $faviconPath ? $CdnData.'/assets/'.$faviconPath : null;
+		return $faviconPath ? $this->getCdnData().'/assets/'.$faviconPath : null;
     }
     
     /**
