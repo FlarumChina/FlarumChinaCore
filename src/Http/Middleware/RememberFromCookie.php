@@ -12,18 +12,30 @@
 namespace Flarum\Http\Middleware;
 
 use Flarum\Http\AccessToken;
+use Flarum\Http\CookieFactory;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Zend\Stratigility\MiddlewareInterface;
+use Psr\Http\Server\MiddlewareInterface as Middleware;
+use Psr\Http\Server\RequestHandlerInterface as Handler;
 
-class RememberFromCookie implements MiddlewareInterface
+class RememberFromCookie implements Middleware
 {
     /**
-     * {@inheritdoc}
+     * @var CookieFactory
      */
-    public function __invoke(Request $request, Response $response, callable $out = null)
+    protected $cookie;
+
+    /**
+     * @param CookieFactory $cookie
+     */
+    public function __construct(CookieFactory $cookie)
     {
-        $id = array_get($request->getCookieParams(), 'flarum_remember');
+        $this->cookie = $cookie;
+    }
+
+    public function process(Request $request, Handler $handler): Response
+    {
+        $id = array_get($request->getCookieParams(), $this->cookie->getName('remember'));
 
         if ($id) {
             $token = AccessToken::find($id);
@@ -31,11 +43,12 @@ class RememberFromCookie implements MiddlewareInterface
             if ($token) {
                 $token->touch();
 
+                /** @var \Illuminate\Contracts\Session\Session $session */
                 $session = $request->getAttribute('session');
-                $session->set('user_id', $token->user_id);
+                $session->put('user_id', $token->user_id);
             }
         }
 
-        return $out ? $out($request, $response) : $response;
+        return $handler->handle($request);
     }
 }

@@ -13,14 +13,12 @@ namespace Flarum\Http\Middleware;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Zend\Stratigility\MiddlewareInterface;
+use Psr\Http\Server\MiddlewareInterface as Middleware;
+use Psr\Http\Server\RequestHandlerInterface as Handler;
 
-class ParseJsonBody implements MiddlewareInterface
+class ParseJsonBody implements Middleware
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function __invoke(Request $request, Response $response, callable $out = null)
+    public function process(Request $request, Handler $handler): Response
     {
         if (str_contains($request->getHeaderLine('content-type'), 'json')) {
             $input = json_decode($request->getBody(), true);
@@ -28,6 +26,6 @@ class ParseJsonBody implements MiddlewareInterface
             $request = $request->withParsedBody($input ?: []);
         }
 
-        return $out ? $out($request, $response) : $response;
+        return $handler->handle($request);
     }
 }

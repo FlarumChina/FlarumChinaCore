@@ -138,6 +138,7 @@ class InstallCommand extends AbstractCommand
     protected function install()
     {
         try {
+            $this->debug = $this->dataSource->isDebugMode();
             $this->dbConfig = $this->dataSource->getDatabaseConfiguration();
 
             $validation = $this->getValidator()->make(
@@ -214,7 +215,7 @@ class InstallCommand extends AbstractCommand
         $dbConfig = $this->dbConfig;
 
         $config = [
-            'debug'    => true,
+            'debug'    => $this->debug,
             'database' => [
                 'driver'    => $dbConfig['driver'],
                 'host'      => $dbConfig['host'],
@@ -241,8 +242,8 @@ class InstallCommand extends AbstractCommand
         $db = $this->application->make('flarum.db');
         $version = $db->getPdo()->getAttribute(PDO::ATTR_SERVER_VERSION);
 
-        if (version_compare($version, '5.5.0', '<')) {
-        throw new Exception('请使用MYSQL5.5，及以上版本');
+        if (version_compare($version, '5.6.0', '<')) {
+        throw new Exception('请使用MYSQL5.6，及以上版本');
         }
 
         $this->info('Writing config');
@@ -287,10 +288,10 @@ class InstallCommand extends AbstractCommand
         Group::unguard();
 
         $groups = [
-            [Group::ADMINISTRATOR_ID, 'Admin', 'Admins', '#B72A2A', 'wrench'],
+            [Group::ADMINISTRATOR_ID, 'Admin', 'Admins', '#B72A2A', 'fas fa-wrench'],
             [Group::GUEST_ID, 'Guest', 'Guests', null, null],
             [Group::MEMBER_ID, 'Member', 'Members', null, null],
-            [Group::MODERATOR_ID, 'Mod', 'Mods', '#80349E', 'bolt']
+            [Group::MODERATOR_ID, 'Mod', 'Mods', '#80349E', 'fas fa-bolt']
         ];
 
         foreach ($groups as $group) {
@@ -403,7 +404,7 @@ class InstallCommand extends AbstractCommand
     protected function publishAssets()
     {
         $this->filesystem->copyDirectory(
-            $this->application->basePath().'/vendor/components/font-awesome/fonts',
+            $this->application->basePath().'/vendor/components/font-awesome/webfonts',
             $this->application->publicPath().'/assets/fonts'
         );
     }

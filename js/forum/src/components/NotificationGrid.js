@@ -177,13 +177,13 @@ export default class NotificationGrid extends Component {
 
     items.add('alert', {
       name: 'alert',
-      icon: 'bell',
+      icon: 'fas fa-bell',
       label: app.translator.trans('core.forum.settings.notify_by_web_heading'),
     });
 
     items.add('email', {
       name: 'email',
-      icon: 'envelope-o',
+      icon: 'far fa-envelope',
       label: app.translator.trans('core.forum.settings.notify_by_email_heading'),
     });
 
@@ -206,7 +206,7 @@ export default class NotificationGrid extends Component {
 
     items.add('discussionRenamed', {
       name: 'discussionRenamed',
-      icon: 'pencil',
+      icon: 'fas fa-pencil-alt',
       label: app.translator.trans('core.forum.settings.notify_discussion_renamed_label')
     });
 

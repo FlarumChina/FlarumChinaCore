@@ -17,8 +17,10 @@ use Flarum\Http\Exception\RouteNotFoundException;
 use Flarum\Http\RouteCollection;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Server\MiddlewareInterface as Middleware;
+use Psr\Http\Server\RequestHandlerInterface as Handler;
 
-class DispatchRoute
+class DispatchRoute implements Middleware
 {
     /**
      * @var RouteCollection
@@ -43,14 +45,10 @@ class DispatchRoute
     /**
      * Dispatch the given request to our route collection.
      *
-     * @param Request $request
-     * @param Response $response
-     * @param callable $out
-     * @return Response
      * @throws MethodNotAllowedException
      * @throws RouteNotFoundException
      */
-    public function __invoke(Request $request, Response $response, callable $out = null)
+    public function process(Request $request, Handler $handler): Response
     {
         $method = $request->getMethod();
         $uri = $request->getUri()->getPath() ?: '/';
@@ -59,9 +57,9 @@ class DispatchRoute
 
         switch ($routeInfo[0]) {
             case Dispatcher::NOT_FOUND:
-                throw new RouteNotFoundException;
+                throw new RouteNotFoundException($uri);
             case Dispatcher::METHOD_NOT_ALLOWED:
-                throw new MethodNotAllowedException;
+                throw new MethodNotAllowedException($method);
             case Dispatcher::FOUND:
                 $handler = $routeInfo[1];
                 $parameters = $routeInfo[2];

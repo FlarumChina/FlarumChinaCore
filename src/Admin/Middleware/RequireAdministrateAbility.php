@@ -14,19 +14,17 @@ namespace Flarum\Admin\Middleware;
 use Flarum\User\AssertPermissionTrait;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Zend\Stratigility\MiddlewareInterface;
+use Psr\Http\Server\MiddlewareInterface as Middleware;
+use Psr\Http\Server\RequestHandlerInterface as Handler;
 
-class RequireAdministrateAbility implements MiddlewareInterface
+class RequireAdministrateAbility implements Middleware
 {
     use AssertPermissionTrait;
 
-    /**
-     * {@inheritdoc}
-     */
-    public function __invoke(Request $request, Response $response, callable $out = null)
+    public function process(Request $request, Handler $handler): Response
     {
         $this->assertAdmin($request->getAttribute('actor'));
 
-        return $out ? $out($request, $response) : $response;
+        return $handler->handle($request);
     }
 }

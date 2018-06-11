@@ -17551,42 +17551,42 @@ System.register('flarum/components/AdminNav', ['flarum/Component', 'flarum/compo
 
             items.add('dashboard', AdminLinkButton.component({
               href: app.route('dashboard'),
-              icon: 'bar-chart',
+              icon: 'far fa-chart-bar',
               children: app.translator.trans('core.admin.nav.dashboard_button'),
               description: app.translator.trans('core.admin.nav.dashboard_text')
             }));
 
             items.add('basics', AdminLinkButton.component({
               href: app.route('basics'),
-              icon: 'pencil',
+              icon: 'fa fa-pencil-alt',
               children: app.translator.trans('core.admin.nav.basics_button'),
               description: app.translator.trans('core.admin.nav.basics_text')
             }));
 
             items.add('mail', AdminLinkButton.component({
               href: app.route('mail'),
-              icon: 'envelope',
+              icon: 'fa fa-envelope',
               children: app.translator.trans('core.admin.nav.email_button'),
               description: app.translator.trans('core.admin.nav.email_text')
             }));
 
             items.add('permissions', AdminLinkButton.component({
               href: app.route('permissions'),
-              icon: 'key',
+              icon: 'fa fa-key',
               children: app.translator.trans('core.admin.nav.permissions_button'),
               description: app.translator.trans('core.admin.nav.permissions_text')
             }));
 
             items.add('appearance', AdminLinkButton.component({
               href: app.route('appearance'),
-              icon: 'paint-brush',
+              icon: 'fa fa-paint-brush',
               children: app.translator.trans('core.admin.nav.appearance_button'),
               description: app.translator.trans('core.admin.nav.appearance_text')
             }));
 
             items.add('extensions', AdminLinkButton.component({
               href: app.route('extensions'),
-              icon: 'puzzle-piece',
+              icon: 'fa fa-puzzle-piece',
               children: app.translator.trans('core.admin.nav.extensions_button'),
               description: app.translator.trans('core.admin.nav.extensions_text')
             }));
@@ -17646,7 +17646,7 @@ System.register('flarum/components/Alert', ['flarum/Component', 'flarum/componen
 
             if (dismissible || dismissible === undefined) {
               dismissControl.push(m(Button, {
-                icon: 'times',
+                icon: 'fa fa-times',
                 className: 'Button Button--link Button--icon Alert-dismiss',
                 onclick: ondismiss }));
             }
@@ -17767,10 +17767,10 @@ System.register('flarum/components/AlertManager', ['flarum/Component', 'flarum/c
 });;
 'use strict';
 
-System.register('flarum/components/AppearancePage', ['flarum/components/Page', 'flarum/components/Button', 'flarum/components/Switch', 'flarum/components/EditCustomCssModal', 'flarum/components/EditCustomHeaderModal', 'flarum/components/UploadImageButton', 'flarum/utils/saveSettings'], function (_export, _context) {
+System.register('flarum/components/AppearancePage', ['flarum/components/Page', 'flarum/components/Button', 'flarum/components/Switch', 'flarum/components/EditCustomCssModal', 'flarum/components/EditCustomHeaderModal', 'flarum/components/EditCustomFooterModal', 'flarum/components/UploadImageButton', 'flarum/utils/saveSettings'], function (_export, _context) {
   "use strict";
 
-  var Page, Button, Switch, EditCustomCssModal, EditCustomHeaderModal, UploadImageButton, saveSettings, AppearancePage;
+  var Page, Button, Switch, EditCustomCssModal, EditCustomHeaderModal, EditCustomFooterModal, UploadImageButton, saveSettings, AppearancePage;
   return {
     setters: [function (_flarumComponentsPage) {
       Page = _flarumComponentsPage.default;
@@ -17782,6 +17782,8 @@ System.register('flarum/components/AppearancePage', ['flarum/components/Page', '
       EditCustomCssModal = _flarumComponentsEditCustomCssModal.default;
     }, function (_flarumComponentsEditCustomHeaderModal) {
       EditCustomHeaderModal = _flarumComponentsEditCustomHeaderModal.default;
+    }, function (_flarumComponentsEditCustomFooterModal) {
+      EditCustomFooterModal = _flarumComponentsEditCustomFooterModal.default;
     }, function (_flarumComponentsUploadImageButton) {
       UploadImageButton = _flarumComponentsUploadImageButton.default;
     }, function (_flarumUtilsSaveSettings) {
@@ -17903,6 +17905,27 @@ System.register('flarum/components/AppearancePage', ['flarum/components/Page', '
                     children: app.translator.trans('core.admin.appearance.edit_header_button'),
                     onclick: function onclick() {
                       return app.modal.show(new EditCustomHeaderModal());
+                    }
+                  })
+                ),
+                m(
+                  'fieldset',
+                  null,
+                  m(
+                    'legend',
+                    null,
+                    app.translator.trans('core.admin.appearance.custom_footer_heading')
+                  ),
+                  m(
+                    'div',
+                    { className: 'helpText' },
+                    app.translator.trans('core.admin.appearance.custom_footer_text')
+                  ),
+                  Button.component({
+                    className: 'Button',
+                    children: app.translator.trans('core.admin.appearance.edit_footer_button'),
+                    onclick: function onclick() {
+                      return app.modal.show(new EditCustomFooterModal());
                     }
                   })
                 ),
@@ -18359,7 +18382,7 @@ System.register('flarum/components/Checkbox', ['flarum/Component', 'flarum/compo
         }, {
           key: 'getDisplay',
           value: function getDisplay() {
-            return this.loading ? LoadingIndicator.component({ size: 'tiny' }) : icon(this.props.state ? 'check' : 'times');
+            return this.loading ? LoadingIndicator.component({ size: 'tiny' }) : icon(this.props.state ? 'fa fa-check' : 'fa fa-times');
           }
         }, {
           key: 'onchange',
@@ -18589,7 +18612,7 @@ System.register('flarum/components/Dropdown', ['flarum/Component', 'flarum/helpe
             props.buttonClassName = props.buttonClassName || '';
             props.menuClassName = props.menuClassName || '';
             props.label = props.label || '';
-            props.caretIcon = typeof props.caretIcon !== 'undefined' ? props.caretIcon : 'caret-down';
+            props.caretIcon = typeof props.caretIcon !== 'undefined' ? props.caretIcon : 'fa fa-caret-down';
           }
         }]);
         return Dropdown;
@@ -18651,6 +18674,61 @@ System.register('flarum/components/EditCustomCssModal', ['flarum/components/Sett
       }(SettingsModal);
 
       _export('default', EditCustomCssModal);
+    }
+  };
+});;
+'use strict';
+
+System.register('flarum/components/EditCustomFooterModal', ['flarum/components/SettingsModal'], function (_export, _context) {
+  "use strict";
+
+  var SettingsModal, EditCustomFooterModal;
+  return {
+    setters: [function (_flarumComponentsSettingsModal) {
+      SettingsModal = _flarumComponentsSettingsModal.default;
+    }],
+    execute: function () {
+      EditCustomFooterModal = function (_SettingsModal) {
+        babelHelpers.inherits(EditCustomFooterModal, _SettingsModal);
+
+        function EditCustomFooterModal() {
+          babelHelpers.classCallCheck(this, EditCustomFooterModal);
+          return babelHelpers.possibleConstructorReturn(this, (EditCustomFooterModal.__proto__ || Object.getPrototypeOf(EditCustomFooterModal)).apply(this, arguments));
+        }
+
+        babelHelpers.createClass(EditCustomFooterModal, [{
+          key: 'className',
+          value: function className() {
+            return 'EditCustomFooterModal Modal--large';
+          }
+        }, {
+          key: 'title',
+          value: function title() {
+            return app.translator.trans('core.admin.edit_footer.title');
+          }
+        }, {
+          key: 'form',
+          value: function form() {
+            return [m(
+              'p',
+              null,
+              app.translator.trans('core.admin.edit_footer.customize_text')
+            ), m(
+              'div',
+              { className: 'Form-group' },
+              m('textarea', { className: 'FormControl', rows: '30', bidi: this.setting('custom_footer') })
+            )];
+          }
+        }, {
+          key: 'onsaved',
+          value: function onsaved() {
+            window.location.reload();
+          }
+        }]);
+        return EditCustomFooterModal;
+      }(SettingsModal);
+
+      _export('default', EditCustomFooterModal);
     }
   };
 });;
@@ -18914,7 +18992,7 @@ System.register('flarum/components/ExtensionsPage', ['flarum/components/Page', '
                   { className: 'container' },
                   Button.component({
                     children: app.translator.trans('core.admin.extensions.add_button'),
-                    icon: 'plus',
+                    icon: 'fa fa-plus',
                     className: 'Button Button--primary',
                     onclick: function onclick() {
                       return app.modal.show(new AddExtensionModal());
@@ -18952,7 +19030,7 @@ System.register('flarum/components/ExtensionsPage', ['flarum/components/Page', '
                               className: 'ExtensionListItem-controls',
                               buttonClassName: 'Button Button--icon Button--flat',
                               menuClassName: 'Dropdown-menu--right',
-                              icon: 'ellipsis-h' },
+                              icon: 'fa fa-ellipsis-h' },
                             controls
                           ) : '',
                           m(
@@ -18984,7 +19062,7 @@ System.register('flarum/components/ExtensionsPage', ['flarum/components/Page', '
 
             if (app.extensionSettings[name]) {
               items.add('settings', Button.component({
-                icon: 'cog',
+                icon: 'fa fa-cog',
                 children: app.translator.trans('core.admin.extensions.settings_button'),
                 onclick: app.extensionSettings[name]
               }));
@@ -18992,7 +19070,7 @@ System.register('flarum/components/ExtensionsPage', ['flarum/components/Page', '
 
             if (!enabled) {
               items.add('uninstall', Button.component({
-                icon: 'trash-o',
+                icon: 'far fa-trash-alt',
                 children: app.translator.trans('core.admin.extensions.uninstall_button'),
                 onclick: function onclick() {
                   app.request({
@@ -19624,7 +19702,7 @@ System.register('flarum/components/Modal', ['flarum/Component', 'flarum/componen
                   'div',
                   { className: 'Modal-close App-backControl' },
                   Button.component({
-                    icon: 'times',
+                    icon: 'fa fa-times',
                     onclick: this.hide.bind(this),
                     className: 'Button Button--icon Button--link'
                   })
@@ -19878,7 +19956,7 @@ System.register('flarum/components/Navigation', ['flarum/Component', 'flarum/com
             return LinkButton.component({
               className: 'Button Navigation-back Button--icon',
               href: history.backUrl(),
-              icon: 'chevron-left',
+              icon: 'fa fa-chevron-left',
               title: previous.title,
               config: function config() {},
               onclick: function onclick(e) {
@@ -19900,7 +19978,7 @@ System.register('flarum/components/Navigation', ['flarum/Component', 'flarum/com
             return Button.component({
               className: 'Button Button--icon Navigation-pin' + (pane.pinned ? ' active' : ''),
               onclick: pane.togglePinned.bind(pane),
-              icon: 'thumb-tack'
+              icon: 'fa fa-thumbtack'
             });
           }
         }, {
@@ -19919,7 +19997,7 @@ System.register('flarum/components/Navigation', ['flarum/Component', 'flarum/com
                 e.stopPropagation();
                 drawer.show();
               },
-              icon: 'reorder'
+              icon: 'fa fa-bars'
             });
           }
         }]);
@@ -20064,9 +20142,9 @@ System.register('flarum/components/PermissionDropdown', ['flarum/components/Drop
             var adminGroup = app.store.getById('groups', Group.ADMINISTRATOR_ID);
 
             if (everyone) {
-              this.props.label = Badge.component({ icon: 'globe' });
+              this.props.label = Badge.component({ icon: 'fa fa-globe' });
             } else if (members) {
-              this.props.label = Badge.component({ icon: 'user' });
+              this.props.label = Badge.component({ icon: 'fa fa-user' });
             } else {
               this.props.label = [badgeForId(Group.ADMINISTRATOR_ID), groupIds.map(badgeForId)];
             }
@@ -20074,8 +20152,8 @@ System.register('flarum/components/PermissionDropdown', ['flarum/components/Drop
             if (this.showing) {
               if (this.props.allowGuest) {
                 this.props.children.push(Button.component({
-                  children: [Badge.component({ icon: 'globe' }), ' ', app.translator.trans('core.admin.permissions_controls.everyone_button')],
-                  icon: everyone ? 'check' : true,
+                  children: [Badge.component({ icon: 'fa fa-globe' }), ' ', app.translator.trans('core.admin.permissions_controls.everyone_button')],
+                  icon: everyone ? 'fa fa-check' : true,
                   onclick: function onclick() {
                     return _this2.save([Group.GUEST_ID]);
                   },
@@ -20084,15 +20162,15 @@ System.register('flarum/components/PermissionDropdown', ['flarum/components/Drop
               }
 
               this.props.children.push(Button.component({
-                children: [Badge.component({ icon: 'user' }), ' ', app.translator.trans('core.admin.permissions_controls.members_button')],
-                icon: members ? 'check' : true,
+                children: [Badge.component({ icon: 'fa fa-user' }), ' ', app.translator.trans('core.admin.permissions_controls.members_button')],
+                icon: members ? 'fa fa-check' : true,
                 onclick: function onclick() {
                   return _this2.save([Group.MEMBER_ID]);
                 },
                 disabled: this.isGroupDisabled(Group.MEMBER_ID)
               }), Separator.component(), Button.component({
                 children: [badgeForId(adminGroup.id()), ' ', adminGroup.namePlural()],
-                icon: !everyone && !members ? 'check' : true,
+                icon: !everyone && !members ? 'fa fa-check' : true,
                 disabled: !everyone && !members,
                 onclick: function onclick(e) {
                   if (e.shiftKey) e.stopPropagation();
@@ -20105,7 +20183,7 @@ System.register('flarum/components/PermissionDropdown', ['flarum/components/Drop
               }).map(function (group) {
                 return Button.component({
                   children: [badgeForId(group.id()), ' ', group.namePlural()],
-                  icon: groupIds.indexOf(group.id()) !== -1 ? 'check' : true,
+                  icon: groupIds.indexOf(group.id()) !== -1 ? 'fa fa-check' : true,
                   onclick: function onclick(e) {
                     if (e.shiftKey) e.stopPropagation();
                     _this2.toggle(group.id());
@@ -20236,7 +20314,7 @@ System.register('flarum/components/PermissionGrid', ['flarum/Component', 'flarum
                       null,
                       scope.label,
                       ' ',
-                      scope.onremove ? Button.component({ icon: 'times', className: 'Button Button--text PermissionGrid-removeScope', onclick: scope.onremove }) : ''
+                      scope.onremove ? Button.component({ icon: 'fa fa-times', className: 'Button Button--text PermissionGrid-removeScope', onclick: scope.onremove }) : ''
                     );
                   }),
                   m(
@@ -20312,21 +20390,21 @@ System.register('flarum/components/PermissionGrid', ['flarum/Component', 'flarum
             var items = new ItemList();
 
             items.add('viewDiscussions', {
-              icon: 'eye',
+              icon: 'fa fa-eye',
               label: app.translator.trans('core.admin.permissions.view_discussions_label'),
               permission: 'viewDiscussions',
               allowGuest: true
             }, 100);
 
             items.add('viewUserList', {
-              icon: 'users',
+              icon: 'fa fa-users',
               label: app.translator.trans('core.admin.permissions.view_user_list_label'),
               permission: 'viewUserList',
               allowGuest: true
             }, 100);
 
             items.add('signUp', {
-              icon: 'user-plus',
+              icon: 'fa fa-user-plus',
               label: app.translator.trans('core.admin.permissions.sign_up_label'),
               setting: function setting() {
                 return SettingDropdown.component({
@@ -20344,13 +20422,13 @@ System.register('flarum/components/PermissionGrid', ['flarum/Component', 'flarum
             var items = new ItemList();
 
             items.add('start', {
-              icon: 'edit',
+              icon: 'fa fa-edit',
               label: app.translator.trans('core.admin.permissions.start_discussions_label'),
               permission: 'startDiscussion'
             }, 100);
 
             items.add('allowRenaming', {
-              icon: 'i-cursor',
+              icon: 'fa fa-i-cursor',
               label: app.translator.trans('core.admin.permissions.allow_renaming_label'),
               setting: function setting() {
                 var minutes = parseInt(app.data.settings.allow_renaming, 10);
@@ -20371,13 +20449,13 @@ System.register('flarum/components/PermissionGrid', ['flarum/Component', 'flarum
             var items = new ItemList();
 
             items.add('reply', {
-              icon: 'reply',
+              icon: 'fa fa-reply',
               label: app.translator.trans('core.admin.permissions.reply_to_discussions_label'),
               permission: 'discussion.reply'
             }, 100);
 
             items.add('allowPostEditing', {
-              icon: 'pencil',
+              icon: 'fa fa-pencil-alt',
               label: app.translator.trans('core.admin.permissions.allow_post_editing_label'),
               setting: function setting() {
                 var minutes = parseInt(app.data.settings.allow_post_editing, 10);
@@ -20398,37 +20476,37 @@ System.register('flarum/components/PermissionGrid', ['flarum/Component', 'flarum
             var items = new ItemList();
 
             items.add('viewIpsPosts', {
-              icon: 'bullseye',
+              icon: 'fa fa-bullseye',
               label: app.translator.trans('core.admin.permissions.view_post_ips_label'),
               permission: 'discussion.viewIpsPosts'
             }, 110);
 
             items.add('renameDiscussions', {
-              icon: 'i-cursor',
+              icon: 'fa fa-i-cursor',
               label: app.translator.trans('core.admin.permissions.rename_discussions_label'),
               permission: 'discussion.rename'
             }, 100);
 
             items.add('hideDiscussions', {
-              icon: 'trash-o',
+              icon: 'far fa-trash-alt',
               label: app.translator.trans('core.admin.permissions.delete_discussions_label'),
               permission: 'discussion.hide'
             }, 90);
 
             items.add('deleteDiscussions', {
-              icon: 'times',
+              icon: 'fa fa-times',
               label: app.translator.trans('core.admin.permissions.delete_discussions_forever_label'),
               permission: 'discussion.delete'
             }, 80);
 
             items.add('editPosts', {
-              icon: 'pencil',
+              icon: 'fa fa-pencil-alt',
               label: app.translator.trans('core.admin.permissions.edit_and_delete_posts_label'),
               permission: 'discussion.editPosts'
             }, 70);
 
             items.add('deletePosts', {
-              icon: 'times',
+              icon: 'fa fa-times',
               label: app.translator.trans('core.admin.permissions.delete_posts_forever_label'),
               permission: 'discussion.deletePosts'
             }, 60);
@@ -20537,7 +20615,7 @@ System.register('flarum/components/PermissionsPage', ['flarum/components/Page', 
                     { className: 'Button Group Group--add', onclick: function onclick() {
                         return app.modal.show(new EditGroupModal());
                       } },
-                    icon('plus', { className: 'Group-icon' }),
+                    icon('fa fa-plus', { className: 'Group-icon' }),
                     m(
                       'span',
                       { className: 'Group-name' },
@@ -20712,7 +20790,7 @@ System.register('flarum/components/Select', ['flarum/Component', 'flarum/helpers
                   );
                 })
               ),
-              icon('sort', { className: 'Select-caret' })
+              icon('fa fa-sort', { className: 'Select-caret' })
             );
           }
         }]);
@@ -20763,7 +20841,7 @@ System.register('flarum/components/SelectDropdown', ['flarum/components/Dropdown
         }], [{
           key: 'initProps',
           value: function initProps(props) {
-            props.caretIcon = typeof props.caretIcon !== 'undefined' ? props.caretIcon : 'sort';
+            props.caretIcon = typeof props.caretIcon !== 'undefined' ? props.caretIcon : 'fa fa-sort';
 
             babelHelpers.get(SelectDropdown.__proto__ || Object.getPrototypeOf(SelectDropdown), 'initProps', this).call(this, props);
 
@@ -20862,7 +20940,7 @@ System.register('flarum/components/SessionDropdown', ['flarum/helpers/avatar', '
             var items = new ItemList();
 
             items.add('logOut', Button.component({
-              icon: 'sign-out',
+              icon: 'fa fa-sign-out-alt',
               children: app.translator.trans('core.admin.header.log_out_button'),
               onclick: app.session.logout.bind(app.session)
             }), -100);
@@ -20918,7 +20996,7 @@ System.register('flarum/components/SettingDropdown', ['flarum/components/SelectD
 
             props.className = 'SettingDropdown';
             props.buttonClassName = 'Button Button--text';
-            props.caretIcon = 'caret-down';
+            props.caretIcon = 'fa fa-caret-down';
             props.defaultLabel = 'Custom';
 
             props.children = props.options.map(function (_ref) {
@@ -20929,7 +21007,7 @@ System.register('flarum/components/SettingDropdown', ['flarum/components/SelectD
 
               return Button.component({
                 children: label,
-                icon: active ? 'check' : true,
+                icon: active ? 'fa fa-check' : true,
                 onclick: saveSettings.bind(_this2, babelHelpers.defineProperty({}, props.key, value)),
                 active: active
               });
@@ -21100,7 +21178,7 @@ System.register('flarum/components/SplitDropdown', ['flarum/components/Dropdown'
                 className: 'Dropdown-toggle Button Button--icon ' + this.props.buttonClassName,
                 'data-toggle': 'dropdown' },
               icon(this.props.icon, { className: 'Button-icon' }),
-              icon('caret-down', { className: 'Button-caret' })
+              icon('fa fa-caret-down', { className: 'Button-caret' })
             )];
           }
         }, {
@@ -21175,7 +21253,7 @@ System.register('flarum/components/StatusWidget', ['flarum/components/DashboardW
             items.add('help', m(
               'a',
               { href: 'http://flarum.org/docs/troubleshooting', target: '_blank' },
-              icon('question-circle'),
+              icon('fa fa-question-circle'),
               ' ',
               app.translator.trans('core.admin.dashboard.help_link')
             ));
@@ -21643,10 +21721,10 @@ System.register('flarum/helpers/humanTime', ['flarum/utils/humanTime'], function
 System.register('flarum/helpers/icon', [], function (_export, _context) {
   "use strict";
 
-  function icon(name) {
+  function icon(fontClass) {
     var attrs = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
-    attrs.className = 'icon fa fa-' + name + ' ' + (attrs.className || '');
+    attrs.className = 'icon ' + fontClass + ' ' + (attrs.className || '');
 
     return m('i', attrs);
   }
@@ -21793,7 +21871,7 @@ System.register('flarum/helpers/userOnline', ['flarum/helpers/icon'], function (
             return m(
                 'span',
                 { className: 'UserOnline' },
-                icon('circle')
+                icon('fa fa-circle')
             );
         }
     }
@@ -22328,7 +22406,7 @@ System.register('flarum/models/Discussion', ['flarum/Model', 'flarum/utils/compu
           return Math.max(0, commentsCount - 1);
         }),
         posts: Model.hasMany('posts'),
-        relevantPosts: Model.hasMany('relevantPosts'),
+        mostRelevantPost: Model.hasOne('mostRelevantPost'),
 
         readTime: Model.attribute('readTime', Model.transformDate),
         readNumber: Model.attribute('readNumber'),
@@ -22376,7 +22454,7 @@ System.register('flarum/models/Discussion', ['flarum/Model', 'flarum/utils/compu
           var items = new ItemList();
 
           if (this.isHidden()) {
-            items.add('hidden', m(Badge, { type: 'hidden', icon: 'trash', label: app.translator.trans('core.lib.badge.hidden_tooltip') }));
+            items.add('hidden', m(Badge, { type: 'hidden', icon: 'fa fa-trash', label: app.translator.trans('core.lib.badge.hidden_tooltip') }));
           }
 
           return items;
@@ -22414,7 +22492,7 @@ System.register('flarum/models/Forum', ['flarum/Model'], function (_export, _con
         babelHelpers.createClass(Forum, [{
           key: 'apiEndpoint',
           value: function apiEndpoint() {
-            return '/forum';
+            return '/';
           }
         }]);
         return Forum;
@@ -23962,7 +24040,7 @@ System.register('flarum/utils/string', [], function (_export, _context) {
   _export('truncate', truncate);
 
   function slug(string) {
-    return string.toLowerCase().replace(/[^a-z0-9]/gi, '-').replace(/-+/g, '-').replace(/-$|^-/g, '') || '-';
+    return string.toLowerCase().replace(/[^a-z0-9]/gi, '-').replace(/-+/g, '-').replace(/-$|^-/g, '');
   }
 
   /**

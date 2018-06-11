@@ -15,14 +15,15 @@ use Illuminate\Contracts\View\Factory as ViewFactory;
 use Illuminate\Support\ViewErrorBag;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Zend\Stratigility\MiddlewareInterface;
+use Psr\Http\Server\MiddlewareInterface as Middleware;
+use Psr\Http\Server\RequestHandlerInterface as Handler;
 
 /**
  * Inspired by Illuminate\View\Middleware\ShareErrorsFromSession.
  *
  * @author Taylor Otwell
  */
-class ShareErrorsFromSession implements MiddlewareInterface
+class ShareErrorsFromSession implements Middleware
 {
     /**
      * @var ViewFactory
@@ -37,10 +38,7 @@ class ShareErrorsFromSession implements MiddlewareInterface
         $this->view = $view;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function __invoke(Request $request, Response $response, callable $out = null)
+    public function process(Request $request, Handler $handler): Response
     {
         $session = $request->getAttribute('session');
 
@@ -57,6 +55,6 @@ class ShareErrorsFromSession implements MiddlewareInterface
 
         $session->remove('errors');
 
-        return $out ? $out($request, $response) : $response;
+        return $handler->handle($request);
     }
 }

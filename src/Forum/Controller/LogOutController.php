@@ -12,7 +12,6 @@
 namespace Flarum\Forum\Controller;
 
 use Flarum\Foundation\Application;
-use Flarum\Http\Controller\ControllerInterface;
 use Flarum\Http\Exception\TokenMismatchException;
 use Flarum\Http\Rememberer;
 use Flarum\Http\SessionAuthenticator;
@@ -21,11 +20,13 @@ use Flarum\User\AssertPermissionTrait;
 use Flarum\User\Event\LoggedOut;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Contracts\View\Factory;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Server\RequestHandlerInterface;
 use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Diactoros\Response\RedirectResponse;
 
-class LogOutController implements ControllerInterface
+class LogOutController implements RequestHandlerInterface
 {
     use AssertPermissionTrait;
 
@@ -85,10 +86,10 @@ class LogOutController implements ControllerInterface
 
     /**
      * @param Request $request
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return ResponseInterface
      * @throws TokenMismatchException
      */
-    public function handle(Request $request)
+    public function handle(Request $request): ResponseInterface
     {
         $session = $request->getAttribute('session');
         $actor = $request->getAttribute('actor');
@@ -102,7 +103,7 @@ class LogOutController implements ControllerInterface
 
         // If a valid CSRF token hasn't been provided, show a view which will
         // allow the user to press a button to complete the log out process.
-        $csrfToken = $session->get('csrf_token');
+        $csrfToken = $session->token();
 
         if (array_get($request->getQueryParams(), 'token') !== $csrfToken) {
             $return = array_get($request->getQueryParams(), 'return');

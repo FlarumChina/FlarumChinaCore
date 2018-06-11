@@ -16,16 +16,14 @@ use Flarum\Http\AccessToken;
 use Flarum\User\User;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Zend\Stratigility\MiddlewareInterface;
+use Psr\Http\Server\MiddlewareInterface as Middleware;
+use Psr\Http\Server\RequestHandlerInterface as Handler;
 
-class AuthenticateWithHeader implements MiddlewareInterface
+class AuthenticateWithHeader implements Middleware
 {
     const TOKEN_PREFIX = 'Token ';
 
-    /**
-     * {@inheritdoc}
-     */
-    public function __invoke(Request $request, Response $response, callable $out = null)
+    public function process(Request $request, Handler $handler): Response
     {
         $headerLine = $request->getHeaderLine('authorization');
 
@@ -53,7 +51,7 @@ class AuthenticateWithHeader implements MiddlewareInterface
             }
         }
 
-        return $out ? $out($request, $response) : $response;
+        return $handler->handle($request);
     }
 
     private function getUser($string)
