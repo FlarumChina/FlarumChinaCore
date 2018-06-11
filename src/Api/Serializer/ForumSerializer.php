@@ -36,7 +36,6 @@ class ForumSerializer extends AbstractSerializer
      * @var UrlGenerator
      */
     protected $url;
-    public $CdnData;
 
     /**
      * @param Application $app
