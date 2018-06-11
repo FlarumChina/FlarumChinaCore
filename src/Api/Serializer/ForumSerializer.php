@@ -110,7 +110,7 @@ class ForumSerializer extends AbstractSerializer
     {
         $logoPath = $this->settings->get('logo_path');
 
-        return $logoPath ? $this->url->to('forum')->path('assets/'.$logoPath) : null;
+        return $logoPath ? $CdnData.'/assets/'.$logoPath : null;
     }
 
     /**
@@ -120,7 +120,7 @@ class ForumSerializer extends AbstractSerializer
     {
         $faviconPath = $this->settings->get('favicon_path');
 
-        return $faviconPath ? $this->url->to('forum')->path('assets/'.$faviconPath) : null;
+		return $faviconPath ? $CdnData.'/assets/'.$faviconPath : null;
     }
     
     /**
