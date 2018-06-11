@@ -81,7 +81,7 @@ class InstallController implements RequestHandlerInterface
         $data->setBaseUrl($baseUrl);
 
         $data->setSetting('forum_title', array_get($input, 'forumTitle'));
-        $data->setSetting('forum_cdn', '//'.parse_url($baseUrl, PHP_URL_HOST));
+        $data->setSetting('forum_cdn', '0');
         $data->setSetting('mail_from', 'noreply@'.preg_replace('/^www\./i', '', parse_url($baseUrl, PHP_URL_HOST)));
         $data->setSetting('welcome_title', '欢迎来到 '.array_get($input, 'forumTitle'));
         $data->setSetting('forum_meta', '<!--Meta代码-->');
