@@ -1,27 +1,26 @@
 @if ($isRobot)
     {!! $content !!}
 @else
-    <div id="flarum-loading" style="display: none">
+<div id="flarum-loading" style="display: none">
     {{ $translator->trans('core.views.content.loading_text') }}
-    </div>
+</div>
 
-    @if ($allowJs)
-    <noscript>
-        <div class="Alert">
+<noscript>
+    <div class="Alert">
         <div class="container">
             {{ $translator->trans('core.views.content.javascript_disabled_message') }}
         </div>
-        </div>
+    </div>
+</noscript>
 
-        {!! $content !!}
-    </noscript>
-    @else
-    <div class="Alert Alert--error">
+<div id="flarum-loading-error" style="display: none">
+    <div class="Alert">
         <div class="container">
-        {{ $translator->trans('core.views.content.load_error_message') }}
+            {{ $translator->trans('core.views.content.load_error_message') }}
         </div>
     </div>
+</div>
 
+<noscript id="flarum-content">
     {!! $content !!}
-    @endif
-@endif
+</noscript>
