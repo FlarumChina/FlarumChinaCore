@@ -80,25 +80,19 @@ export default class UserCard extends Component {
   infoItems() {
     const items = new ItemList();
     const user = this.props.user;
-<<<<<<< HEAD
     var uid = this.props.user.id();
-    const lastSeenTime = user.lastSeenTime();
+    const lastSeenAt = user.lastSeenAt();
 
-    items.add('bio',
-      UserBio.component({
-        user,
-        editable: this.props.editable
-      })
-    );
+    // items.add('bio',
+    //   UserBio.component({
+    //     user,
+    //     editable: this.props.editable
+    //   })
+    // );
 
     items.add('uid', 'UID：\t' + uid);
 
-    if (lastSeenTime) {
-=======
-    const lastSeenAt = user.lastSeenAt();
-
     if (lastSeenAt) {
->>>>>>> upstream/master
       const online = user.isOnline();
 
       items.add('lastSeen', (
