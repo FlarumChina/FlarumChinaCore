@@ -90,7 +90,7 @@ class Discussion
         }
 
         $document->title = $apiDocument->data->attributes->title;
-        $document->setDescription(str_limit($postDescriptionGood, $limit = 220, $end = '...'));
+        //$document->setDescription(str_limit($postDescriptionGood, $limit = 220, $end = '...'));
         $document->canonicalUrl = $url([]);
         $document->content = $this->view->make('flarum.forum::frontend.content.discussion', compact('apiDocument', 'page', 'getResource', 'posts', 'url'));
         $document->payload['apiDocument'] = $apiDocument;
