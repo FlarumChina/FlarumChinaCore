@@ -12,14 +12,15 @@
 namespace Flarum\Admin\Content;
 
 use Flarum\Extension\ExtensionManager;
-use Flarum\Frontend\Content\ContentInterface;
-use Flarum\Frontend\HtmlDocument;
+use Flarum\Frontend\Document;
 use Flarum\Group\Permission;
+use Flarum\Settings\Event\Deserializing;
 use Flarum\Settings\SettingsRepositoryInterface;
+use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Database\ConnectionInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
-class AdminPayload implements ContentInterface
+class AdminPayload
 {
     /**
      * @var SettingsRepositoryInterface
@@ -40,17 +41,25 @@ class AdminPayload implements ContentInterface
      * @param SettingsRepositoryInterface $settings
      * @param ExtensionManager $extensions
      * @param ConnectionInterface $db
+     * @param Dispatcher $events
      */
-    public function __construct(SettingsRepositoryInterface $settings, ExtensionManager $extensions, ConnectionInterface $db)
+    public function __construct(SettingsRepositoryInterface $settings, ExtensionManager $extensions, ConnectionInterface $db, Dispatcher $events)
     {
         $this->settings = $settings;
         $this->extensions = $extensions;
         $this->db = $db;
+        $this->events = $events;
     }
 
-    public function populate(HtmlDocument $document, Request $request)
+    public function __invoke(Document $document, Request $request)
     {
-        $document->payload['settings'] = $this->settings->all();
+        $settings = $this->settings->all();
+
+        $this->events->dispatch(
+            new Deserializing($settings)
+        );
+
+        $document->payload['settings'] = $settings;
         $document->payload['permissions'] = Permission::map();
         $document->payload['extensions'] = $this->extensions->getExtensions()->toArray();
 

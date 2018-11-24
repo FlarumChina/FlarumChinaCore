@@ -12,10 +12,11 @@
 namespace Flarum\Post;
 
 use Flarum\Database\AbstractModel;
+use Flarum\Database\ScopeVisibilityTrait;
 use Flarum\Discussion\Discussion;
 use Flarum\Event\GetModelIsPrivate;
-use Flarum\Event\ScopeModelVisibility;
 use Flarum\Foundation\EventGeneratorTrait;
+use Flarum\Notification\Notification;
 use Flarum\Post\Event\Deleted;
 use Flarum\User\User;
 use Illuminate\Database\Eloquent\Builder;
@@ -24,37 +25,37 @@ use Illuminate\Database\Eloquent\Builder;
  * @property int $id
  * @property int $discussion_id
  * @property int $number
- * @property \Carbon\Carbon $time
+ * @property \Carbon\Carbon $created_at
  * @property int|null $user_id
  * @property string|null $type
  * @property string|null $content
- * @property \Carbon\Carbon|null $edit_time
- * @property int|null $edit_user_id
- * @property \Carbon\Carbon|null $hide_time
- * @property int|null $hide_user_id
+ * @property \Carbon\Carbon|null $edited_at
+ * @property int|null $edited_user_id
+ * @property \Carbon\Carbon|null $hidden_at
+ * @property int|null $hidden_user_id
  * @property \Flarum\Discussion\Discussion|null $discussion
  * @property User|null $user
- * @property User|null $editUser
- * @property User|null $hideUser
+ * @property User|null $editedUser
+ * @property User|null $hiddenUser
  * @property string $ip_address
  * @property bool $is_private
  */
 class Post extends AbstractModel
 {
     use EventGeneratorTrait;
+    use ScopeVisibilityTrait;
 
-    /**
-     * {@inheritdoc}
-     */
     protected $table = 'posts';
 
     /**
-     * {@inheritdoc}
+     * The attributes that should be mutated to dates.
+     *
+     * @var array
      */
-    protected $dates = ['time', 'edit_time', 'hide_time'];
+    protected $dates = ['created_at', 'edited_at', 'hidden_at'];
 
     /**
-     * Casts properties to a specific type.
+     * The attributes that should be cast to native types.
      *
      * @var array
      */
@@ -93,7 +94,7 @@ class Post extends AbstractModel
         // discussion.
         static::creating(function (Post $post) {
             $post->type = $post::$type;
-            $post->number = ++$post->discussion->number_index;
+            $post->number = ++$post->discussion->post_number_index;
             $post->discussion->save();
         });
 
@@ -105,35 +106,11 @@ class Post extends AbstractModel
 
         static::deleted(function (Post $post) {
             $post->raise(new Deleted($post));
+
+            Notification::whereSubject($post)->delete();
         });
 
         static::addGlobalScope(new RegisteredTypesScope);
-    }
-
-    /**
-     * @param Builder $query
-     * @param User $actor
-     */
-    public function scopeWhereVisibleTo(Builder $query, User $actor)
-    {
-        static::$dispatcher->dispatch(
-            new ScopeModelVisibility($query, $actor, 'view')
-        );
-
-        // Make sure the post's discussion is visible as well
-        $query->whereExists(function ($query) use ($actor) {
-            $grammar = $query->getGrammar();
-            $column1 = $grammar->wrap('discussions.id');
-            $column2 = $grammar->wrap('posts.discussion_id');
-
-            $query->selectRaw('1')
-                ->from('discussions')
-                ->whereRaw("$column1 = $column2");
-
-            static::$dispatcher->dispatch(
-                new ScopeModelVisibility(Discussion::query()->setQuery($query), $actor, 'view')
-            );
-        });
     }
 
     /**
@@ -154,7 +131,7 @@ class Post extends AbstractModel
      */
     public function discussion()
     {
-        return $this->belongsTo('Flarum\Discussion\Discussion', 'discussion_id');
+        return $this->belongsTo(Discussion::class);
     }
 
     /**
@@ -164,7 +141,7 @@ class Post extends AbstractModel
      */
     public function user()
     {
-        return $this->belongsTo('Flarum\User\User', 'user_id');
+        return $this->belongsTo(User::class);
     }
 
     /**
@@ -172,9 +149,9 @@ class Post extends AbstractModel
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function editUser()
+    public function editedUser()
     {
-        return $this->belongsTo('Flarum\User\User', 'edit_user_id');
+        return $this->belongsTo(User::class, 'edited_user_id');
     }
 
     /**
@@ -182,9 +159,9 @@ class Post extends AbstractModel
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function hideUser()
+    public function hiddenUser()
     {
-        return $this->belongsTo('Flarum\User\User', 'hide_user_id');
+        return $this->belongsTo(User::class, 'hidden_user_id');
     }
 
     /**

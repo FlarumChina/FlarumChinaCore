@@ -80,6 +80,7 @@ export default class UserCard extends Component {
   infoItems() {
     const items = new ItemList();
     const user = this.props.user;
+<<<<<<< HEAD
     var uid = this.props.user.id();
     const lastSeenTime = user.lastSeenTime();
 
@@ -93,13 +94,18 @@ export default class UserCard extends Component {
     items.add('uid', 'UID：\t' + uid);
 
     if (lastSeenTime) {
+=======
+    const lastSeenAt = user.lastSeenAt();
+
+    if (lastSeenAt) {
+>>>>>>> upstream/master
       const online = user.isOnline();
 
       items.add('lastSeen', (
         <span className={'UserCard-lastSeen' + (online ? ' online' : '')}>
           {online
             ? [icon('fas fa-circle'), ' ', app.translator.trans('core.forum.user.online_text')]
-            : [icon('far fa-clock'), ' ', humanTime(lastSeenTime)]}
+            : [icon('far fa-clock'), ' ', humanTime(lastSeenAt)]}
         </span>
       ));
     }

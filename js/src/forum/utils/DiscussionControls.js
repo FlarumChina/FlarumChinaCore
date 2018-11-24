@@ -171,6 +171,8 @@ export default {
         deferred.reject();
       }
     } else {
+      deferred.reject();
+
       app.modal.show(new LogInModal());
     }
 
@@ -183,7 +185,7 @@ export default {
    * @return {Promise}
    */
   hideAction() {
-    this.pushAttributes({ hideTime: new Date(), hideUser: app.session.user });
+    this.pushAttributes({ hiddenAt: new Date(), hiddenUser: app.session.user });
 
     return this.save({ isHidden: true });
   },
@@ -194,7 +196,7 @@ export default {
    * @return {Promise}
    */
   restoreAction() {
-    this.pushAttributes({ hideTime: null, hideUser: null });
+    this.pushAttributes({ hiddenAt: null, hiddenUser: null });
 
     return this.save({ isHidden: false });
   },

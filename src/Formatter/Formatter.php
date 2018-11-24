@@ -112,7 +112,7 @@ class Formatter
         $configurator->rendering->engine->cacheDir = $this->cacheDir;
 
         $configurator->enableJavaScript();
-        $configurator->javascript->exportMethods = ['preview'];
+        $configurator->javascript->exports = ['preview'];
 
         $configurator->javascript->setMinifier('MatthiasMullieMinify')
             ->keepGoing = true;
@@ -122,9 +122,9 @@ class Formatter
         $configurator->Autolink;
         $configurator->tags->onDuplicate('replace');
 
-        $this->configureExternalLinks($configurator);
-
         $this->events->dispatch(new Configuring($configurator));
+
+        $this->configureExternalLinks($configurator);
 
         return $configurator;
     }

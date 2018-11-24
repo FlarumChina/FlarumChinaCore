@@ -12,8 +12,10 @@
 namespace Flarum\Extend;
 
 use Flarum\Extension\Extension;
-use Flarum\Frontend\Asset\ExtensionAssets;
-use Flarum\Frontend\CompilerFactory;
+use Flarum\Frontend\Assets;
+use Flarum\Frontend\Compiler\Source\SourceCollector;
+use Flarum\Frontend\Frontend as ActualFrontend;
+use Flarum\Frontend\RecompileFrontendAssets;
 use Flarum\Http\RouteHandlerFactory;
 use Illuminate\Contracts\Container\Container;
 
@@ -24,55 +26,94 @@ class Frontend implements ExtenderInterface
     protected $css = [];
     protected $js;
     protected $routes = [];
+    protected $content = [];
 
-    public function __construct($frontend)
+    public function __construct(string $frontend)
     {
         $this->frontend = $frontend;
     }
 
-    public function css($path)
+    public function css(string $path)
     {
         $this->css[] = $path;
 
         return $this;
     }
 
-    public function js($path)
+    public function js(string $path)
     {
         $this->js = $path;
 
         return $this;
     }
 
-    public function route($path, $name, $content = null)
+    public function route(string $path, string $name, $content = null)
     {
         $this->routes[] = compact('path', 'name', 'content');
 
         return $this;
     }
 
-    public function __invoke(Container $container, Extension $extension = null)
+    /**
+     * @param callable|string $callback
+     * @return $this
+     */
+    public function content($callback)
     {
-        $this->registerAssets($container, $extension);
-        $this->registerRoutes($container);
+        $this->content[] = $callback;
+
+        return $this;
     }
 
-    private function registerAssets(Container $container, Extension $extension)
+    public function extend(Container $container, Extension $extension = null)
+    {
+        $this->registerAssets($container, $this->getModuleName($extension));
+        $this->registerRoutes($container);
+        $this->registerContent($container);
+    }
+
+    private function registerAssets(Container $container, string $moduleName)
     {
         if (empty($this->css) && empty($this->js)) {
             return;
         }
 
-        $container->resolving(
-            "flarum.$this->frontend.assets",
-            function (CompilerFactory $assets) use ($extension) {
-                $assets->add(function () use ($extension) {
-                    return new ExtensionAssets(
-                        $extension, $this->css, $this->js
-                    );
+        $abstract = 'flarum.assets.'.$this->frontend;
+
+        $container->resolving($abstract, function (Assets $assets) use ($moduleName) {
+            if ($this->js) {
+                $assets->js(function (SourceCollector $sources) use ($moduleName) {
+                    $sources->addString(function () {
+                        return 'var module={}';
+                    });
+                    $sources->addFile($this->js);
+                    $sources->addString(function () use ($moduleName) {
+                        return "flarum.extensions['$moduleName']=module.exports";
+                    });
                 });
             }
-        );
+
+            if ($this->css) {
+                $assets->css(function (SourceCollector $sources) {
+                    foreach ($this->css as $path) {
+                        $sources->addFile($path);
+                    }
+                });
+            }
+        });
+
+        if (! $container->bound($abstract)) {
+            $container->bind($abstract, function (Container $container) {
+                return $container->make('flarum.assets.factory')($this->frontend);
+            });
+
+            $container->make('events')->subscribe(
+                new RecompileFrontendAssets(
+                    $container->make($abstract),
+                    $container->make('flarum.locales')
+                )
+            );
+        }
     }
 
     private function registerRoutes(Container $container)
@@ -87,8 +128,33 @@ class Frontend implements ExtenderInterface
         foreach ($this->routes as $route) {
             $routes->get(
                 $route['path'], $route['name'],
-                $factory->toForum($route['content'])
+                $factory->toFrontend($this->frontend, $route['content'])
             );
         }
+    }
+
+    private function registerContent(Container $container)
+    {
+        if (empty($this->content)) {
+            return;
+        }
+
+        $container->resolving(
+            "flarum.frontend.$this->frontend",
+            function (ActualFrontend $frontend, Container $container) {
+                foreach ($this->content as $content) {
+                    if (is_string($content)) {
+                        $content = $container->make($content);
+                    }
+
+                    $frontend->content($content);
+                }
+            }
+        );
+    }
+
+    private function getModuleName(?Extension $extension): string
+    {
+        return $extension ? $extension->getId() : 'site-custom';
     }
 }

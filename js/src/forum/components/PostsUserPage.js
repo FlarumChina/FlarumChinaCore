@@ -1,6 +1,7 @@
 import UserPage from './UserPage';
 import LoadingIndicator from '../../common/components/LoadingIndicator';
 import Button from '../../common/components/Button';
+import Placeholder from '../../common/components/Placeholder';
 import CommentPost from './CommentPost';
 
 /**
@@ -43,6 +44,14 @@ export default class PostsUserPage extends UserPage {
   }
 
   content() {
+    if (this.posts.length === 0 && ! this.loading) {
+      return (
+        <div className="PostsUserPage">
+          <Placeholder text={app.translator.trans('core.forum.user.posts_empty_text')} />
+        </div>
+      );
+    }
+
     let footer;
 
     if (this.loading) {
@@ -71,7 +80,9 @@ export default class PostsUserPage extends UserPage {
             </li>
           ))}
         </ul>
-        {footer}
+        <div className="PostsUserPage-loadMore">
+          {footer}
+        </div>
       </div>
     );
   }
@@ -114,7 +125,7 @@ export default class PostsUserPage extends UserPage {
         type: 'comment'
       },
       page: {offset, limit: this.loadLimit},
-      sort: '-time'
+      sort: '-createdAt'
     });
   }
 

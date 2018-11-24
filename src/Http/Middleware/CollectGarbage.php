@@ -11,10 +11,11 @@
 
 namespace Flarum\Http\Middleware;
 
+use Carbon\Carbon;
 use Flarum\Http\AccessToken;
-use Flarum\User\AuthToken;
 use Flarum\User\EmailToken;
 use Flarum\User\PasswordToken;
+use Flarum\User\RegistrationToken;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -55,13 +56,15 @@ class CollectGarbage implements Middleware
             return;
         }
 
-        AccessToken::whereRaw('last_activity <= ? - lifetime', [time()])->delete();
+        $time = Carbon::now()->timestamp;
 
-        $earliestToKeep = date('Y-m-d H:i:s', time() - 24 * 60 * 60);
+        AccessToken::whereRaw('last_activity_at <= ? - lifetime_seconds', [$time])->delete();
+
+        $earliestToKeep = date('Y-m-d H:i:s', $time - 24 * 60 * 60);
 
         EmailToken::where('created_at', '<=', $earliestToKeep)->delete();
         PasswordToken::where('created_at', '<=', $earliestToKeep)->delete();
-        AuthToken::where('created_at', '<=', $earliestToKeep)->delete();
+        RegistrationToken::where('created_at', '<=', $earliestToKeep)->delete();
 
         $this->sessionHandler->gc($this->getSessionLifetimeInSeconds());
     }

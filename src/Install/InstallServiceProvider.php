@@ -34,12 +34,12 @@ class InstallServiceProvider extends AbstractServiceProvider
                     new PhpVersion('7.1.0'),
                     new PhpExtensions([
                         'dom',
-                        'fileinfo',
                         'gd',
                         'json',
                         'mbstring',
                         'openssl',
                         'pdo_mysql',
+                        'tokenizer',
                     ]),
                     new WritablePaths([
                         base_path(),
@@ -73,13 +73,13 @@ class InstallServiceProvider extends AbstractServiceProvider
         $route = $this->app->make(RouteHandlerFactory::class);
 
         $routes->get(
-            '/',
+            '/{path:.*}',
             'index',
             $route->toController(Controller\IndexController::class)
         );
 
         $routes->post(
-            '/',
+            '/{path:.*}',
             'install',
             $route->toController(Controller\InstallController::class)
         );

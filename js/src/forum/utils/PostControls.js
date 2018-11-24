@@ -111,10 +111,20 @@ export default {
 
   /**
    * Open the composer to edit a post.
+   *
+   * @return {Promise}
    */
   editAction() {
-    app.composer.load(new EditPostComposer({ post: this }));
+    const deferred = m.deferred();
+
+    const component = new EditPostComposer({ post: this });
+
+    app.composer.load(component);
     app.composer.show();
+
+    deferred.resolve(component);
+
+    return deferred.promise;
   },
 
   /**
@@ -123,7 +133,7 @@ export default {
    * @return {Promise}
    */
   hideAction() {
-    this.pushAttributes({ hideTime: new Date(), hideUser: app.session.user });
+    this.pushAttributes({ hiddenAt: new Date(), hiddenUser: app.session.user });
 
     return this.save({ isHidden: true }).then(() => m.redraw());
   },
@@ -134,7 +144,7 @@ export default {
    * @return {Promise}
    */
   restoreAction() {
-    this.pushAttributes({ hideTime: null, hideUser: null });
+    this.pushAttributes({ hiddenAt: null, hiddenUser: null });
 
     return this.save({ isHidden: false }).then(() => m.redraw());
   },

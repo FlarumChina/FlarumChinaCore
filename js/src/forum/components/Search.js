@@ -38,7 +38,7 @@ export default class Search extends Component {
      *
      * @type {SearchSource[]}
      */
-    this.sources = this.sourceItems().toArray();
+    this.sources = null;
 
     /**
      * The number of sources that are still loading results.
@@ -73,6 +73,15 @@ export default class Search extends Component {
     if (typeof this.value() === 'undefined') {
       this.value(currentSearch || '');
     }
+
+    // Initialize search sources in the view rather than the constructor so
+    // that we have access to app.forum.
+    if (!this.sources) {
+      this.sources = this.sourceItems().toArray();
+    }
+
+    // Hide the search view if no sources were loaded
+    if (!this.sources.length) return <div></div>;
 
     return (
       <div className={'Search ' + classList({
@@ -151,7 +160,7 @@ export default class Search extends Component {
               search.loadingSources++;
 
               source.search(query).then(() => {
-                search.loadingSources--;
+                search.loadingSources = Math.max(0, search.loadingSources - 1);
                 m.redraw();
               });
             });
@@ -180,6 +189,9 @@ export default class Search extends Component {
    * Navigate to the currently selected search result and close the list.
    */
   selectResult() {
+    clearTimeout(this.searchTimeout);
+    this.loadingSources = 0;
+
     if (this.value()) {
       m.route(this.getItem(this.index).find('a').attr('href'));
     } else {
@@ -210,8 +222,8 @@ export default class Search extends Component {
   sourceItems() {
     const items = new ItemList();
 
-    items.add('discussions', new DiscussionsSearchSource());
-    items.add('users', new UsersSearchSource());
+    if (app.forum.attribute('canViewDiscussions')) items.add('discussions', new DiscussionsSearchSource());
+    if (app.forum.attribute('canViewUserList')) items.add('users', new UsersSearchSource());
 
     return items;
   }

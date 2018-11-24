@@ -11,18 +11,18 @@
 
 namespace Flarum\Frontend\Content;
 
-use Flarum\Frontend\HtmlDocument;
+use Flarum\Frontend\Document;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
-class Meta implements ContentInterface
+class Meta
 {
-    public function populate(HtmlDocument $document, Request $request)
+    public function __invoke(Document $document, Request $request)
     {
         $document->meta = array_merge($document->meta, $this->buildMeta($document));
         $document->head = array_merge($document->head, $this->buildHead($document));
     }
 
-    private function buildMeta(HtmlDocument $document)
+    private function buildMeta(Document $document)
     {
         $forumApiDocument = $document->getForumApiDocument();
 
@@ -35,11 +35,9 @@ class Meta implements ContentInterface
         return $meta;
     }
 
-    private function buildHead(HtmlDocument $document)
+    private function buildHead(Document $document)
     {
-        $head = [
-            'font' => '<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700,600">'
-        ];
+        $head = [];
 
         if ($faviconUrl = array_get($document->getForumApiDocument(), 'data.attributes.faviconUrl')) {
             $head['favicon'] = '<link rel="shortcut icon" href="'.e($faviconUrl).'">';

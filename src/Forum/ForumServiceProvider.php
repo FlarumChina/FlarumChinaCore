@@ -13,16 +13,15 @@ namespace Flarum\Forum;
 
 use Flarum\Event\ConfigureForumRoutes;
 use Flarum\Event\ConfigureMiddleware;
+use Flarum\Formatter\Formatter;
 use Flarum\Foundation\AbstractServiceProvider;
-use Flarum\Http\Middleware\AuthenticateWithSession;
-use Flarum\Http\Middleware\CollectGarbage;
-use Flarum\Http\Middleware\DispatchRoute;
-use Flarum\Http\Middleware\HandleErrors;
-use Flarum\Http\Middleware\ParseJsonBody;
-use Flarum\Http\Middleware\RememberFromCookie;
-use Flarum\Http\Middleware\SetLocale;
-use Flarum\Http\Middleware\ShareErrorsFromSession;
-use Flarum\Http\Middleware\StartSession;
+use Flarum\Foundation\Application;
+use Flarum\Frontend\AddLocaleAssets;
+use Flarum\Frontend\AddTranslations;
+use Flarum\Frontend\Assets;
+use Flarum\Frontend\Compiler\Source\SourceCollector;
+use Flarum\Frontend\RecompileFrontendAssets;
+use Flarum\Http\Middleware as HttpMiddleware;
 use Flarum\Http\RouteCollection;
 use Flarum\Http\RouteHandlerFactory;
 use Flarum\Http\UrlGenerator;
@@ -45,47 +44,59 @@ class ForumServiceProvider extends AbstractServiceProvider
             return new RouteCollection;
         });
 
-        $this->app->singleton('flarum.forum.middleware', function ($app) {
+        $this->app->singleton('flarum.forum.middleware', function (Application $app) {
             $pipe = new MiddlewarePipe;
 
             // All requests should first be piped through our global error handler
-            $debugMode = ! $app->isUpToDate() || $app->inDebugMode();
-            $pipe->pipe($app->make(HandleErrors::class, ['debug' => $debugMode]));
+            if ($app->inDebugMode()) {
+                $pipe->pipe($app->make(HttpMiddleware\HandleErrorsWithWhoops::class));
+            } else {
+                $pipe->pipe($app->make(HttpMiddleware\HandleErrorsWithView::class));
+            }
 
-            $pipe->pipe($app->make(ParseJsonBody::class));
-            $pipe->pipe($app->make(CollectGarbage::class));
-            $pipe->pipe($app->make(StartSession::class));
-            $pipe->pipe($app->make(RememberFromCookie::class));
-            $pipe->pipe($app->make(AuthenticateWithSession::class));
-            $pipe->pipe($app->make(SetLocale::class));
-            $pipe->pipe($app->make(ShareErrorsFromSession::class));
+            $pipe->pipe($app->make(HttpMiddleware\ParseJsonBody::class));
+            $pipe->pipe($app->make(HttpMiddleware\CollectGarbage::class));
+            $pipe->pipe($app->make(HttpMiddleware\StartSession::class));
+            $pipe->pipe($app->make(HttpMiddleware\RememberFromCookie::class));
+            $pipe->pipe($app->make(HttpMiddleware\AuthenticateWithSession::class));
+            $pipe->pipe($app->make(HttpMiddleware\SetLocale::class));
+            $pipe->pipe($app->make(HttpMiddleware\ShareErrorsFromSession::class));
 
             event(new ConfigureMiddleware($pipe, 'forum'));
-
-            $pipe->pipe($app->make(DispatchRoute::class, ['routes' => $app->make('flarum.forum.routes')]));
 
             return $pipe;
         });
 
-        $this->app->bind('flarum.forum.assets', function () {
-            $assets = $this->app->make('flarum.frontend.assets.defaults')('forum');
+        $this->app->afterResolving('flarum.forum.middleware', function (MiddlewarePipe $pipe) {
+            $pipe->pipe(new HttpMiddleware\DispatchRoute($this->app->make('flarum.forum.routes')));
+        });
 
-            $assets->add(function () {
-                return [
-                    $this->app->make(Asset\FormatterJs::class),
-                    $this->app->make(Asset\CustomCss::class)
-                ];
+        $this->app->bind('flarum.assets.forum', function () {
+            /** @var Assets $assets */
+            $assets = $this->app->make('flarum.assets.factory')('forum');
+
+            $assets->js(function (SourceCollector $sources) {
+                $sources->addFile(__DIR__.'/../../js/dist/forum.js');
+                $sources->addString(function () {
+                    return $this->app->make(Formatter::class)->getJs();
+                });
             });
+
+            $assets->css(function (SourceCollector $sources) {
+                $sources->addFile(__DIR__.'/../../less/forum.less');
+                $sources->addString(function () {
+                    return $this->app->make(SettingsRepositoryInterface::class)->get('custom_less');
+                });
+            });
+
+            $this->app->make(AddTranslations::class)->forFrontend('forum')->to($assets);
+            $this->app->make(AddLocaleAssets::class)->to($assets);
 
             return $assets;
         });
 
-        $this->app->bind('flarum.forum.frontend', function () {
-            $view = $this->app->make('flarum.frontend.view.defaults')('forum');
-
-            $view->setAssets($this->app->make('flarum.forum.assets'));
-
-            return $view;
+        $this->app->bind('flarum.frontend.forum', function () {
+            return $this->app->make('flarum.frontend.factory')('forum');
         });
     }
 
@@ -103,9 +114,18 @@ class ForumServiceProvider extends AbstractServiceProvider
             'settings' => $this->app->make(SettingsRepositoryInterface::class)
         ]);
 
-        $this->app->make('events')->subscribe(
+        $events = $this->app->make('events');
+
+        $events->subscribe(
             new RecompileFrontendAssets(
-                $this->app->make('flarum.forum.assets'),
+                $this->app->make('flarum.assets.forum'),
+                $this->app->make('flarum.locales')
+            )
+        );
+
+        $events->subscribe(
+            new ValidateCustomLess(
+                $this->app->make('flarum.assets.forum'),
                 $this->app->make('flarum.locales'),
                 $this->app
             )

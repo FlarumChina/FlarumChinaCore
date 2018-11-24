@@ -54,6 +54,6 @@ class AuthorGambit extends AbstractRegexGambit
             $ids[] = $this->users->getIdForUsername($username);
         }
 
-        $search->getQuery()->whereIn('start_user_id', $ids, 'and', $negate);
+        $search->getQuery()->whereIn('discussions.user_id', $ids, 'and', $negate);
     }
 }

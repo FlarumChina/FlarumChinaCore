@@ -21,6 +21,10 @@ class JsCompiler extends RevisionCompiler
      */
     protected function save(string $file, array $sources): bool
     {
+        if (empty($sources)) {
+            return false;
+        }
+
         $mapFile = $file.'.map';
 
         $map = new SourceMap();
@@ -67,7 +71,7 @@ class JsCompiler extends RevisionCompiler
      */
     protected function format(string $string): string
     {
-        return preg_replace('~//# sourceMappingURL.*$~s', '', $string).";\n";
+        return preg_replace('~//# sourceMappingURL.*$~m', '', $string).";\n";
     }
 
     /**
