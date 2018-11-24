@@ -24,3 +24,4 @@
 <noscript id="flarum-content">
     {!! $content !!}
 </noscript>
+@endif
