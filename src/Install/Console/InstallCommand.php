@@ -11,6 +11,7 @@
 
 namespace Flarum\Install\Console;
 
+use Carbon\Carbon;
 use Exception;
 use Flarum\Console\AbstractCommand;
 use Flarum\Database\DatabaseMigrationRepository;
@@ -238,6 +239,8 @@ class InstallCommand extends AbstractCommand
 
         $factory = new ConnectionFactory($this->application);
 
+        $laravelDbConfig['engine'] = 'InnoDB';
+
         $this->db = $factory->make($laravelDbConfig);
         $version = $this->db->getPdo()->getAttribute(PDO::ATTR_SERVER_VERSION);
 
@@ -294,7 +297,7 @@ class InstallCommand extends AbstractCommand
             'username' => $admin['username'],
             'email' => $admin['email'],
             'password' => (new BcryptHasher)->make($admin['password']),
-            'joined_at' => time(),
+            'joined_at' => Carbon::now(),
             'is_email_confirmed' => 1,
         ]);
 
